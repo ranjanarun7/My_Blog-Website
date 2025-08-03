@@ -36,7 +36,7 @@ export default function Navbar({ toggleSidebar }) {
         </button>
         <Link to="/">
           <img
-            src="/image/Logo (2).png"
+            src="/image/Logo.png"
             alt="Logo"
             className="h-10 w-32 rounded-full"
           />
