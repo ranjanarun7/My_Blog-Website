@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import.meta.env.VITE_API_URL
 import PostCard from "../components/PostCard";
 
 const Home = ({ search, selectedCategory }) => {
@@ -7,7 +8,7 @@ const Home = ({ search, selectedCategory }) => {
 
   useEffect(() => {
     axios
-      .get("/api/posts")
+      .get(`${import.meta.env.VITE_API_URL}/api/posts`)
       .then((res) => setPosts(res.data))
       .catch((err) => console.error(err));
   }, []);

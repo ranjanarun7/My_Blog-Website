@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import.meta.env.VITE_API_URL
 import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
@@ -16,7 +17,7 @@ const CreatePost = () => {
 
     try {
       await axios.post(
-        "/api/posts",
+        `${import.meta.env.VITE_API_URL}/api/posts`,
         {
           title,
           image,

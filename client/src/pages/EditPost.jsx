@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import.meta.env.VITE_API_URL
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditPost = () => {
@@ -14,7 +15,7 @@ const EditPost = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    axios.get(`/api/posts/${id}`).then((res) => {
+    axios.get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`).then((res) => {
       const { title, image, category, context } = res.data;
       setTitle(title);
       setImage(image);
@@ -28,7 +29,7 @@ const EditPost = () => {
 
     try {
       await axios.put(
-        `/api/posts/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/posts/${id}`,
         { title, image, category, context },
         {
           headers: {

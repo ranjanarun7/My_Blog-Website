@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import.meta.env.VITE_API_URL
 import { useEffect, useState } from "react";
 
 const SinglePost = () => {
@@ -11,14 +11,14 @@ const SinglePost = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    axios.get(`/api/posts/${id}`)
+    axios.get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`)
       .then((res) => setPost(res.data))
       .catch((err) => console.error(err));
   }, [id]);
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`/api/posts/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/posts/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
