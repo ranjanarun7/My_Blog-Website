@@ -3,12 +3,20 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
+const fs = require("fs"); // 👈 Add this
 
 const postRoutes = require("./routes/postRoutes");
 const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 const app = express();
+
+// ✅ Ensure 'uploads' folder exists
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+  console.log("📁 uploads folder created");
+}
 
 // Middleware
 app.use(express.json());
@@ -18,7 +26,6 @@ const allowedOrigins = [
   "https://my-blog-website-amber.vercel.app",
   "http://localhost:5173",
 ];
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(
   cors({
@@ -34,13 +41,11 @@ app.use(
 );
 
 // Serve uploads statically
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(uploadsDir));
 
 // Routes
 app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoutes);
-
-
 
 // Connect to MongoDB
 mongoose
