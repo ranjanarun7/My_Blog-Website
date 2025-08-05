@@ -5,34 +5,26 @@ const User = require("../models/User");
 
 const router = express.Router();
 
-// ✅ REGISTER
+// Register
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
-
-    // Basic validation
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check for existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already in use" });
     }
 
-    const hashed = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({
-      username,
-      email,
-      password: hashed,
-    });
-
+    const newUser = new User({ username, email, password: hashedPassword });
     const savedUser = await newUser.save();
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: "User registered",
       user: {
         _id: savedUser._id,
         username: savedUser.username,
@@ -40,17 +32,14 @@ router.post("/register", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ Registration error:", err);
     res.status(500).json({ error: "Registration failed", details: err.message });
   }
 });
 
-// ✅ LOGIN
+// Login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Basic validation
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
     }
@@ -81,7 +70,6 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ Login error:", err);
     res.status(500).json({ error: "Login failed", details: err.message });
   }
 });

@@ -1,80 +1,125 @@
 import React, { useState } from "react";
 import axios from "axios";
-import.meta.env.VITE_API_URL
 import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
-  const [title, setTitle] = useState("");
-  const [image, setImage] = useState("");
-  const [category, setCategory] = useState("");
-  const [context, setContext] = useState("");
-
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    category: "",
+    language: "",
+    status: "draft",
+  });
+
+  const [image, setImage] = useState(null);
+  const [error, setError] = useState(null);
+
+  const token = localStorage.getItem("token");
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
+
+    const payload = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      payload.append(key, value);
+    });
+
+    if (image) {
+      payload.append("image", image);
+    }
 
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/posts`,
-        {
-          title,
-          image,
-          category,
-          context,
-          // author aur date backend se aayega (user se via token)
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/posts`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // ✅ token header bhej diya
-          },
-        }
-      );
+      });
+      alert("✅ Post created successfully");
       navigate("/");
     } catch (err) {
-      console.error("Error creating post:", err);
-      alert("Post creation failed. Please make sure you are logged in.");
+      console.error("❌ Error creating post:", err);
+      setError("Failed to create post.");
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Create New Post</h2>
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded">
+      <h2 className="text-2xl font-bold mb-4">📝 Create New Post</h2>
+
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
+          name="title"
           placeholder="Title"
           className="w-full p-2 border rounded"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={formData.title}
+          onChange={handleChange}
           required
         />
-        <input
-          type="text"
-          placeholder="Image URL"
+
+        <textarea
+          name="content"
+          placeholder="Content (HTML allowed)"
+          rows={6}
           className="w-full p-2 border rounded"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
+          value={formData.content}
+          onChange={handleChange}
           required
-        />
+        ></textarea>
+
         <input
           type="text"
+          name="category"
           placeholder="Category"
           className="w-full p-2 border rounded"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
+          value={formData.category}
+          onChange={handleChange}
         />
-        <textarea
-          placeholder="Context"
-          className="w-full p-2 border rounded h-40"
-          value={context}
-          onChange={(e) => setContext(e.target.value)}
-          required
+
+        <input
+          type="text"
+          name="language"
+          placeholder="Language"
+          className="w-full p-2 border rounded"
+          value={formData.language}
+          onChange={handleChange}
         />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          Publish
+
+        <select
+          name="status"
+          className="w-full p-2 border rounded"
+          value={formData.status}
+          onChange={handleChange}
+        >
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+        </select>
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="w-full"
+        />
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          ➕ Create Post
         </button>
       </form>
     </div>

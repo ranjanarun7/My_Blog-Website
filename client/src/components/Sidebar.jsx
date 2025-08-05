@@ -1,58 +1,92 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const Sidebar = ({ search, setSearch, selectedCategory, setSelectedCategory }) => {
-  const categories = ["Technology", "Travel", "Food", "Lifestyle"];
+const Sidebar = ({
+  search,
+  setSearch,
+  setArchiveYear,
+  archiveYear,
+  language,
+  setLanguage,
+}) => {
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const archives = ["2023", "2022", "2021"];
+  const languages = ["English", "Hindi"];
 
-  const handleCategoryClick = (category) => {
-    if (selectedCategory === category) {
-      setSelectedCategory("");
-    } else {
-      setSelectedCategory(category);
-    }
+  // Debounce search
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearch(debouncedSearch);
+    }, 500); // 500ms delay
+    return () => clearTimeout(timeout);
+  }, [debouncedSearch]);
+
+  const handleArchiveClick = (year) => {
+    setArchiveYear(archiveYear === year ? "" : year);
+  };
+
+  const handleLanguageSwitch = () => {
+    const nextLanguage = language === "English" ? "Hindi" : "English";
+    setLanguage(nextLanguage);
+  };
+
+  const handleResetFilters = () => {
+    setSearch("");
+    setDebouncedSearch("");
+    setArchiveYear("");
   };
 
   return (
     <div className="p-4 bg-white rounded shadow space-y-6">
+      {/* 🔍 Search */}
       <div>
         <input
           type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search"
+          value={debouncedSearch}
+          onChange={(e) => setDebouncedSearch(e.target.value)}
+          placeholder="Search posts..."
           className="w-full p-2 border rounded"
         />
       </div>
+
+      {/* 🌍 Language Switcher */}
       <div>
-        <h3 className="font-semibold mb-2">Categories</h3>
+        <h3 className="font-semibold mb-2">Language</h3>
+        <button
+          onClick={handleLanguageSwitch}
+          className="text-sm text-gray-700 bg-gray-200 px-3 py-1 rounded"
+        >
+          {language}
+        </button>
+      </div>
+
+      {/* 🗃️ Archives */}
+      <div>
+        <h3 className="font-semibold mb-2">Archives</h3>
         <ul className="text-sm space-y-1">
-          {categories.map((category) => (
+          {archives.map((year) => (
             <li
-              key={category}
-              className={`cursor-pointer px-2 py-1 rounded ${
-                selectedCategory === category
-                  ? "bg-orange-100 text-orange-600 font-semibold"
+              key={year}
+              className={`cursor-pointer px-2 py-1 rounded transition ${
+                archiveYear === year
+                  ? "bg-blue-100 text-blue-600 font-semibold"
                   : "hover:bg-gray-100"
               }`}
-              onClick={() => handleCategoryClick(category)}
+              onClick={() => handleArchiveClick(year)}
             >
-              {category}
+              {year}
             </li>
           ))}
         </ul>
       </div>
-      <div>
-        <h3 className="font-semibold mb-2">Language</h3>
-        <button className="text-sm text-gray-500 bg-gray-200 px-2 py-1 rounded">
-          English
+
+      {/* ❌ Reset Filters */}
+      <div className="pt-2">
+        <button
+          onClick={handleResetFilters}
+          className="text-sm text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded"
+        >
+          Reset Filters
         </button>
-      </div>
-      <div>
-        <h3 className="font-semibold mb-2">Archives</h3>
-        <ul className="text-sm space-y-1">
-          <li>2023</li>
-          <li>2022</li>
-          <li>2021</li>
-        </ul>
       </div>
     </div>
   );

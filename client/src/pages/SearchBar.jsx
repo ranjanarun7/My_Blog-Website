@@ -6,7 +6,8 @@ const SearchBar = ({ search, setSearch }) => (
     value={search}
     onChange={(e) => setSearch(e.target.value)}
     placeholder="Search posts..."
-    className="w-full p-2 border mb-4"
+    aria-label="Search posts"
+    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
   />
 );
 
