@@ -33,12 +33,16 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("❌ Blocked CORS origin:", origin);
         callback(new Error("❌ Not allowed by CORS"));
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 // Serve uploads statically
 app.use("/uploads", express.static(uploadsDir));
