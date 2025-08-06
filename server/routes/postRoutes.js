@@ -1,32 +1,33 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
 const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 const Post = require("../models/Post");
 const verifyToken = require("../middleware/auth");
 
 const router = express.Router();
 
 /* --------------------------
-   ✅ Ensure uploads/ exists
+   ✅ Cloudinary Config
 --------------------------- */
-const uploadDir = path.join(__dirname, "../uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 /* --------------------------
-   ✅ Multer config
+   ✅ Multer + Cloudinary Storage
 --------------------------- */
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.originalname.replace(/\s+/g, "-");
-    cb(null, uniqueName);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "blog-uploads", // 👈 Cloudinary folder
+    allowed_formats: ["jpg", "jpeg", "png"],
+    transformation: [{ width: 1200, height: 800, crop: "limit" }],
   },
 });
+
 const upload = multer({ storage });
 
 /* --------------------------
@@ -34,10 +35,6 @@ const upload = multer({ storage });
 --------------------------- */
 router.post("/", verifyToken, upload.single("image"), async (req, res) => {
   try {
-    //console.log("🧪 Form Data:", req.body);
-    //console.log("🖼️ Uploaded File:", req.file);
-    //console.log("👤 Authenticated User:", req.user);
-
     const { title, content, status, category, language } = req.body;
 
     if (!title || !content || !status) {
@@ -48,13 +45,13 @@ router.post("/", verifyToken, upload.single("image"), async (req, res) => {
       return res.status(401).json({ error: "Unauthorized - user not authenticated." });
     }
 
-    const image = req.file ? req.file.filename : null;
+    const imageUrl = req.file ? req.file.path : null; // ✅ Cloudinary image URL
 
     const newPost = new Post({
       title,
       content,
       status,
-      image,
+      image: imageUrl, // ✅ Save Cloudinary URL in DB
       category,
       language,
       author: req.user.username,
@@ -74,7 +71,6 @@ router.post("/", verifyToken, upload.single("image"), async (req, res) => {
     });
   }
 });
-
 
 /* --------------------------
    ✅ GET ALL POSTS
@@ -102,7 +98,6 @@ router.get("/", async (req, res) => {
     const posts = await Post.find(filter).sort({ _id: -1 });
     res.status(200).json(posts);
   } catch (err) {
-    //console.error("❌ Error fetching posts:", err);
     res.status(500).json({ error: "Failed to fetch posts", details: err.message });
   }
 });
@@ -116,7 +111,6 @@ router.get("/:id", async (req, res) => {
     if (!post) return res.status(404).json({ error: "Post not found" });
     res.status(200).json(post);
   } catch (err) {
-    //console.error("❌ Error fetching post:", err);
     res.status(500).json({ error: "Failed to fetch post", details: err.message });
   }
 });
@@ -137,7 +131,7 @@ router.put("/:id", verifyToken, upload.single("image"), async (req, res) => {
     const updatedData = { title, content, status };
 
     if (req.file) {
-      updatedData.image = req.file.filename;
+      updatedData.image = req.file.path; // ✅ Cloudinary URL
     }
 
     const updatedPost = await Post.findByIdAndUpdate(req.params.id, updatedData, {
@@ -147,7 +141,6 @@ router.put("/:id", verifyToken, upload.single("image"), async (req, res) => {
 
     res.status(200).json(updatedPost);
   } catch (err) {
-    //console.error("❌ Error updating post:", err);
     res.status(500).json({ error: "Failed to update post", details: err.message });
   }
 });
@@ -167,7 +160,6 @@ router.delete("/:id", verifyToken, async (req, res) => {
     await Post.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (err) {
-    //console.error("❌ Error deleting post:", err);
     res.status(500).json({ error: "Failed to delete post", details: err.message });
   }
 });

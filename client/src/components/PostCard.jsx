@@ -5,7 +5,6 @@ const PostCard = ({ post }) => {
   const plainText =
     post.content?.replace(/<[^>]+>/g, "").slice(0, 100) || "No content available.";
 
-  // ✅ Only use _id (no slug fallback)
   const postLink = `/post/${post._id}`;
 
   return (
@@ -13,7 +12,7 @@ const PostCard = ({ post }) => {
       <img
         src={
           post.image
-            ? `${import.meta.env.VITE_API_URL}/uploads/${post.image}`
+            ? post.image // ✅ Use Cloudinary full URL directly
             : "https://placehold.co/600x400?text=No+Image"
         }
         alt={post.title}

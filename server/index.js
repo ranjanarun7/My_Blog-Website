@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
-const fs = require("fs"); // 👈 Add this
 
 const postRoutes = require("./routes/postRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -11,15 +10,17 @@ const authRoutes = require("./routes/authRoutes");
 dotenv.config();
 const app = express();
 
-// ✅ Ensure 'uploads' folder exists
-const uploadsDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-  console.log("📁 uploads folder created");
-}
-
 // Middleware
 app.use(express.json());
+
+// ✅ Cloudinary config (new)
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // CORS setup
 const allowedOrigins = [
@@ -43,12 +44,11 @@ app.use(
   })
 );
 
-
-// Serve uploads statically
-app.use("/uploads", express.static(uploadsDir));
+// ❌ Removed: uploads folder logic
+// ❌ Removed: app.use("/uploads", express.static(...))
 
 // Routes
-app.use("/api/posts", postRoutes);
+app.use("/api/posts", postRoutes); // ✅ Your postRoutes should now handle Cloudinary upload
 app.use("/api/auth", authRoutes);
 
 // Connect to MongoDB

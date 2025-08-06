@@ -11,10 +11,11 @@ const CreatePost = () => {
     content: "",
     category: "",
     language: "",
-    status: "",
+    status: "draft", // default
   });
 
   const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem("token");
@@ -28,7 +29,13 @@ const CreatePost = () => {
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -40,7 +47,7 @@ const CreatePost = () => {
     });
 
     if (image) {
-      payload.append("image", image);
+      payload.append("image", image); // ✅ Cloudinary-compatible field name
     }
 
     try {
@@ -50,6 +57,7 @@ const CreatePost = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+
       alert("✅ Post created successfully");
       navigate("/");
     } catch (err) {
@@ -75,7 +83,7 @@ const CreatePost = () => {
           required
         />
 
-        {/* ✅ TinyMCE Editor (Free plugin-safe config) */}
+        {/* ✅ TinyMCE Editor */}
         <Editor
           apiKey="hzqxq6992erm01lm4aro2lyvomqr1wdey40hjhek6ybujf40"
           value={formData.content}
@@ -84,9 +92,20 @@ const CreatePost = () => {
             height: 300,
             menubar: true,
             plugins: [
-              "advlist", "autolink", "lists", "link", "charmap", "preview", "anchor",
-              "searchreplace", "visualblocks", "code", "fullscreen",
-              "insertdatetime", "help", "wordcount"
+              "advlist",
+              "autolink",
+              "lists",
+              "link",
+              "charmap",
+              "preview",
+              "anchor",
+              "searchreplace",
+              "visualblocks",
+              "code",
+              "fullscreen",
+              "insertdatetime",
+              "help",
+              "wordcount",
             ],
             toolbar:
               "undo redo | formatselect | bold italic backcolor | " +
@@ -129,6 +148,14 @@ const CreatePost = () => {
           onChange={handleImageChange}
           className="w-full"
         />
+
+        {preview && (
+          <img
+            src={preview}
+            alt="Preview"
+            className="w-full h-40 object-cover rounded border"
+          />
+        )}
 
         <button
           type="submit"

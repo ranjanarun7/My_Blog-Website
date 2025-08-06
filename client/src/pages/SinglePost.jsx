@@ -55,11 +55,11 @@ const SinglePost = () => {
       <img
         src={
           post.image
-            ? `${import.meta.env.VITE_API_URL}/uploads/${post.image}`
+            ? post.image // ✅ Use Cloudinary URL directly
             : "https://placehold.co/600x400?text=No+Image"
         }
         alt={post.title}
-        className="w-full h-52 object-cover"
+        className="w-full h-52 object-cover rounded"
       />
 
       {/* 📝 Title */}
