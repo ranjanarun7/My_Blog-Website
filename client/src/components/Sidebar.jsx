@@ -9,7 +9,7 @@ const Sidebar = ({
   setLanguage,
 }) => {
   const [debouncedSearch, setDebouncedSearch] = useState(search);
-  const archives = ["2023", "2022", "2021"];
+  const archives = ["2025", "2024", "2023"];
   const languages = ["English", "Hindi"];
 
   // Debounce search
