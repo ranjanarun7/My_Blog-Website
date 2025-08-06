@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Editor } from "@tinymce/tinymce-react";
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const CreatePost = () => {
     content: "",
     category: "",
     language: "",
-    status: "draft",
+    status: "",
   });
 
   const [image, setImage] = useState(null);
@@ -20,6 +21,10 @@ const CreatePost = () => {
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleEditorChange = (newContent) => {
+    setFormData((prev) => ({ ...prev, content: newContent }));
   };
 
   const handleImageChange = (e) => {
@@ -70,15 +75,25 @@ const CreatePost = () => {
           required
         />
 
-        <textarea
-          name="content"
-          placeholder="Content (HTML allowed)"
-          rows={6}
-          className="w-full p-2 border rounded"
+        {/* ✅ TinyMCE Editor (Free plugin-safe config) */}
+        <Editor
+          apiKey="hzqxq6992erm01lm4aro2lyvomqr1wdey40hjhek6ybujf40"
           value={formData.content}
-          onChange={handleChange}
-          required
-        ></textarea>
+          onEditorChange={handleEditorChange}
+          init={{
+            height: 300,
+            menubar: true,
+            plugins: [
+              "advlist", "autolink", "lists", "link", "charmap", "preview", "anchor",
+              "searchreplace", "visualblocks", "code", "fullscreen",
+              "insertdatetime", "help", "wordcount"
+            ],
+            toolbar:
+              "undo redo | formatselect | bold italic backcolor | " +
+              "alignleft aligncenter alignright alignjustify | " +
+              "bullist numlist outdent indent | removeformat | help",
+          }}
+        />
 
         <input
           type="text"
