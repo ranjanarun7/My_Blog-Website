@@ -41,7 +41,7 @@ const Contact = () => {
             <span>Pune, Maharashtra</span>
           </div>
         </div>
-        <form className="flex-1 min-w-[350px]" onSubmit={handleSubmit}>
+        <form className="flex-1 min-w-[350px] p-2" onSubmit={handleSubmit}>
           <div className="mb-5">
             <label htmlFor="name" className="block text-base text-gray-700 font-medium mb-2">Name</label>
             <input
