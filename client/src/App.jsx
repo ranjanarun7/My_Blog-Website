@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import ReactGA from "react-ga4";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -14,8 +15,19 @@ import CreatePost from "./pages/CreatePost";
 import EditPost from "./pages/EditPost";
 import SinglePost from "./pages/SinglePost";
 
+// ✅ GA Initialize (apna Measurement ID yahan lagao)
+ReactGA.initialize("G-NTGSK850SN");
+
 function Layout() {
   const location = useLocation();
+
+  // ✅ Google Analytics pageview tracking
+  useEffect(() => {
+    ReactGA.send({
+      hitType: "pageview",
+      page: location.pathname + location.search,
+    });
+  }, [location]);
 
   // ✅ Filters for Sidebar
   const [search, setSearch] = useState("");
@@ -87,9 +99,5 @@ function Layout() {
 }
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <Layout />
-    </BrowserRouter>
-  );
+  return <Layout />;
 }
