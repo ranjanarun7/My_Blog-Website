@@ -13,7 +13,9 @@ import Register from "./pages/Register";
 import CreatePost from "./pages/CreatePost";
 import EditPost from "./pages/EditPost";
 import SinglePost from "./pages/SinglePost";
+import ReactGA from "react-ga4";
 
+ReactGA.initialize("G-NTGSK850SN");
 function Layout() {
   const location = useLocation();
 
@@ -87,6 +89,11 @@ function Layout() {
 }
 
 export default function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+  }, [location]);
   return (
     <BrowserRouter>
       <Layout />
