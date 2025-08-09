@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
-import ReactGA from "react-ga4";
+import { useState } from "react";
+import useVisitorTracking from "./hooks/useVisitorTracking"; // ✅ NEW
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -14,31 +14,15 @@ import Register from "./pages/Register";
 import CreatePost from "./pages/CreatePost";
 import EditPost from "./pages/EditPost";
 import SinglePost from "./pages/SinglePost";
-
-// ✅ GA Initialize (apna Measurement ID yahan lagao)
-ReactGA.initialize("G-NTGSK850SN");
-
+import AdminAnalytics from "./pages/AdminAnalytics";
 function Layout() {
   const location = useLocation();
-
-  // ✅ Google Analytics pageview tracking
-  useEffect(() => {
-    ReactGA.send({
-      hitType: "pageview",
-      page: location.pathname + location.search,
-    });
-  }, [location]);
-
-  // ✅ Filters for Sidebar
   const [search, setSearch] = useState("");
   const [archiveYear, setArchiveYear] = useState("");
   const [language, setLanguage] = useState("English");
-
-  // ✅ Sidebar toggle state (mobile)
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-  // ✅ Only show Sidebar on specific pages
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const showSidebar = ["/", "/post"].some((path) =>
     location.pathname.startsWith(path)
   );
@@ -46,9 +30,7 @@ function Layout() {
   return (
     <>
       <Navbar toggleSidebar={toggleSidebar} />
-
       <div className="flex flex-col md:flex-row gap-4 p-4 relative">
-        {/* ✅ Main Content */}
         <div className="flex-1">
           <Routes>
             <Route
@@ -68,18 +50,18 @@ function Layout() {
             <Route path="/create" element={<CreatePost />} />
             <Route path="/edit/:id" element={<EditPost />} />
             <Route path="/post/:id" element={<SinglePost />} />
+
+            {/* ✅ New Admin Route */}
+            <Route path="/admin" element={<AdminAnalytics />} />
           </Routes>
         </div>
 
-        {/* ✅ Sidebar */}
         {showSidebar && (
           <div
-            className={`
-              fixed top-16 right-0 z-40 bg-white w-64 h-full p-4 shadow-lg
+            className={`fixed top-16 right-0 z-40 bg-white w-64 h-full p-4 shadow-lg
               transform transition-transform duration-300
               ${sidebarOpen ? "translate-x-0" : "translate-x-full"}
-              md:static md:transform-none md:w-72 md:h-auto md:block
-            `}
+              md:static md:transform-none md:w-72 md:h-auto md:block`}
           >
             <Sidebar
               search={search}
@@ -92,12 +74,12 @@ function Layout() {
           </div>
         )}
       </div>
-
       <Footer />
     </>
   );
 }
 
 export default function App() {
+  useVisitorTracking(); // ✅ tracking trigger yahan
   return <Layout />;
 }

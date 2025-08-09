@@ -1,9 +1,29 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const geoip = require("geoip-lite");
 const User = require("../models/User");
+const Visitor = require("../models/Visitor"); // ✅ import visitor model
 
 const router = express.Router();
+
+// 📌 Helper function to log user activity with user info
+async function logUserActivity(req, path, user = null) {
+  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  const geo = geoip.lookup(ip) || {};
+
+  await Visitor.create({
+    ip,
+    country: geo.country || "Unknown",
+    city: geo.city || "Unknown",
+    userAgent: req.headers["user-agent"],
+    path: path || "/",
+    visitedAt: new Date(),
+    username: user?.username || null, // ✅ add username
+    email: user?.email || null        // ✅ add email
+  });
+}
+
 
 // Register
 router.post("/register", async (req, res) => {
@@ -20,8 +40,17 @@ router.post("/register", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      role: req.body.role || "user"
+    });
     const savedUser = await newUser.save();
+
+    // ✅ Log this registration in visitor analytics
+    await logUserActivity(req, "/register", savedUser);
+
 
     res.status(201).json({
       message: "User registered",
@@ -29,6 +58,7 @@ router.post("/register", async (req, res) => {
         _id: savedUser._id,
         username: savedUser.username,
         email: savedUser.email,
+        role: savedUser.role
       },
     });
   } catch (err) {
@@ -55,10 +85,15 @@ router.post("/login", async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
+
+    // ✅ Log this login in visitor analytics
+    await logUserActivity(req, "/login", user);
+
 
     res.json({
       message: "Login successful",
@@ -67,6 +102,7 @@ router.post("/login", async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (err) {

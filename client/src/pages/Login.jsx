@@ -10,7 +10,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  // ✅ Optional: Redirect if already logged in
+  // Optional: Redirect if already logged in
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) navigate("/");
@@ -34,7 +34,9 @@ const Login = () => {
     } catch (err) {
       console.error("Login failed", err);
       setErrorMsg(
-        err.response?.data?.error || "Invalid credentials. Please try again."
+        err.response?.data?.error
+          ? err.response.data.error
+          : "Your username or password is incorrect. Please try again."
       );
     } finally {
       setLoading(false);
@@ -53,6 +55,7 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          autoComplete="username"
         />
 
         <input
@@ -62,15 +65,26 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          autoComplete="current-password"
         />
 
         <button
-          className="bg-black text-white p-2 w-full rounded hover:bg-gray-800"
+          className="bg-black text-white p-2 w-full rounded hover:bg-gray-800 disabled:opacity-50"
           type="submit"
           disabled={loading}
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+
+        {/* Forgot Password Link */}
+        <div className="text-right mt-2">
+          <a
+            href="/forgot-password"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Forgot Password?
+          </a>
+        </div>
 
         {errorMsg && (
           <p className="text-red-600 text-center mt-2">{errorMsg}</p>

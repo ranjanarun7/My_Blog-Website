@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
+const analyticsRoutes = require("./routes/analytics.js");
+
 
 const postRoutes = require("./routes/postRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -27,7 +29,7 @@ const allowedOrigins = [
   "https://my-blog-website-amber.vercel.app",
   "http://localhost:5173",
 ];
-
+app.use("/api", analyticsRoutes);
 app.use(
   cors({
     origin: function (origin, callback) {

@@ -122,6 +122,18 @@ export default function Navbar({ toggleSidebar }) {
                   <div className="px-4 py-2 text-sm text-gray-800 border-b">
                     Hello, {user.username}
                   </div>
+
+                  {/* ✅ Show Admin Dashboard only if user is admin */}
+                  {user.role === "admin" && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm hover:bg-gray-100 text-red-600 font-bold"
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
+
                   <Link
                     to="/create"
                     onClick={() => setDropdownOpen(false)}
