@@ -11,7 +11,7 @@ const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 const app = express();
-app.use("/api", analyticsRoutes);
+
 // Middleware
 app.use(express.json());
 
@@ -49,6 +49,7 @@ app.use(
 // ❌ Removed: app.use("/uploads", express.static(...))
 
 // Routes
+app.use("/api", analyticsRoutes);
 app.use("/api/posts", postRoutes); // ✅ Your postRoutes should now handle Cloudinary upload
 app.use("/api/auth", authRoutes);
 
