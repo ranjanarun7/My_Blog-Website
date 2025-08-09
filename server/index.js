@@ -11,7 +11,7 @@ const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 const app = express();
-
+app.use("/api", analyticsRoutes);
 // Middleware
 app.use(express.json());
 
@@ -29,7 +29,6 @@ const allowedOrigins = [
   "https://my-blog-website-amber.vercel.app",
   "http://localhost:5173",
 ];
-app.use("/api", analyticsRoutes);
 app.use(
   cors({
     origin: function (origin, callback) {
