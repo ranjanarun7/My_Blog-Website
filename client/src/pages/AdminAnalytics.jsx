@@ -14,7 +14,7 @@ export default function AdminAnalytics() {
       return;
     }
 
-    fetch("/api/dashboard", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
