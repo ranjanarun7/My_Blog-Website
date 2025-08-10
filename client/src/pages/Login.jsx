@@ -76,16 +76,6 @@ const Login = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        {/* Forgot Password Link */}
-        <div className="text-right mt-2">
-          <a
-            href="/forgot-password"
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Forgot Password?
-          </a>
-        </div>
-
         {errorMsg && (
           <p className="text-red-600 text-center mt-2">{errorMsg}</p>
         )}
