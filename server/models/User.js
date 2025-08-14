@@ -29,7 +29,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// 🔒 Remove sensitive fields from response
 userSchema.set("toJSON", {
   transform: (doc, ret) => {
     delete ret.password;

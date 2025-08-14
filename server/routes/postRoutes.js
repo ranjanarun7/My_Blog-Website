@@ -7,22 +7,16 @@ const verifyToken = require("../middleware/auth");
 
 const router = express.Router();
 
-/* --------------------------
-   ✅ Cloudinary Config
---------------------------- */
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-/* --------------------------
-   ✅ Multer + Cloudinary Storage
---------------------------- */
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "blog-uploads", // 👈 Cloudinary folder
+    folder: "blog-uploads",
     allowed_formats: ["jpg", "jpeg", "png"],
     transformation: [{ width: 1200, height: 800, crop: "limit" }],
   },
@@ -30,9 +24,6 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-/* --------------------------
-   ✅ CREATE POST
---------------------------- */
 router.post("/", verifyToken, upload.single("image"), async (req, res) => {
   try {
     const { title, content, status, category, language } = req.body;
@@ -45,13 +36,13 @@ router.post("/", verifyToken, upload.single("image"), async (req, res) => {
       return res.status(401).json({ error: "Unauthorized - user not authenticated." });
     }
 
-    const imageUrl = req.file ? req.file.path : null; // ✅ Cloudinary image URL
+    const imageUrl = req.file ? req.file.path : null;
 
     const newPost = new Post({
       title,
       content,
       status,
-      image: imageUrl, // ✅ Save Cloudinary URL in DB
+      image: imageUrl,
       category,
       language,
       author: req.user.username,
@@ -72,9 +63,6 @@ router.post("/", verifyToken, upload.single("image"), async (req, res) => {
   }
 });
 
-/* --------------------------
-   ✅ GET ALL POSTS
---------------------------- */
 router.get("/", async (req, res) => {
   try {
     const { search = "", year = "", language = "" } = req.query;
@@ -102,9 +90,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-/* --------------------------
-   ✅ GET SINGLE POST
---------------------------- */
 router.get("/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -115,9 +100,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-/* --------------------------
-   ✅ UPDATE POST
---------------------------- */
 router.put("/:id", verifyToken, upload.single("image"), async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -131,7 +113,7 @@ router.put("/:id", verifyToken, upload.single("image"), async (req, res) => {
     const updatedData = { title, content, status };
 
     if (req.file) {
-      updatedData.image = req.file.path; // ✅ Cloudinary URL
+      updatedData.image = req.file.path;
     }
 
     const updatedPost = await Post.findByIdAndUpdate(req.params.id, updatedData, {
@@ -145,9 +127,6 @@ router.put("/:id", verifyToken, upload.single("image"), async (req, res) => {
   }
 });
 
-/* --------------------------
-   ✅ DELETE POST
---------------------------- */
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);

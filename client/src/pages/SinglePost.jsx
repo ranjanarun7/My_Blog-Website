@@ -1,9 +1,10 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate,Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { ArrowLeft } from 'lucide-react';
 
 const SinglePost = () => {
-  const { id } = useParams(); // This will now only be the MongoDB _id
+  const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
 
@@ -12,11 +13,11 @@ const SinglePost = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`) // ✅ Using _id directly
+      .get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`) 
       .then((res) => setPost(res.data))
       .catch((err) => {
         console.error("Error fetching post:", err);
-        navigate("/"); // Redirect on error
+        navigate("/"); 
       });
   }, [id, navigate]);
 
@@ -50,52 +51,53 @@ const SinglePost = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto bg-white shadow-md rounded p-6 mt-8">
-      {/* 🖼️ Image */}
-      <img
-        src={
-          post.image
-            ? post.image // ✅ Use Cloudinary URL directly
-            : "https://placehold.co/600x400?text=No+Image"
-        }
-        alt={post.title}
-        className="w-full h-52 object-cover rounded"
-      />
+    <div>
+      <Link to="/">
+        <ArrowLeft />
+      </Link>
+            
+      <div className="max-w-3xl mx-auto bg-white shadow-md rounded p-6 mt-8">
+        
+        <img
+          src={
+            post.image
+              ? post.image
+              : "https://placehold.co/600x400?text=No+Image"
+          }
+          alt={post.title}
+          className="w-full h-52 object-cover rounded"
+        />
 
-      {/* 📝 Title */}
-      <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+        <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+        <p className="text-gray-600 mb-4 text-sm">
+          {post.category || "Uncategorized"} &nbsp;|&nbsp;
+          {post.language || "Unknown Language"} &nbsp;|&nbsp;
+          By {post.author || "Unknown"} &nbsp;|&nbsp;
+          {post.date ? new Date(post.date).toLocaleDateString() : "Date N/A"}
+        </p>
 
-      {/* 🧾 Meta Info */}
-      <p className="text-gray-600 mb-4 text-sm">
-        {post.category || "Uncategorized"} &nbsp;|&nbsp;
-        {post.language || "Unknown Language"} &nbsp;|&nbsp;
-        By {post.author || "Unknown"} &nbsp;|&nbsp;
-        {post.date ? new Date(post.date).toLocaleDateString() : "Date N/A"}
-      </p>
+        <div
+          className="prose prose-lg max-w-none mb-6"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
 
-      {/* 📄 Content */}
-      <div
-        className="prose prose-lg max-w-none mb-6"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
-
-      {/* ✏️ Author Actions */}
-      {isAuthor && (
-        <div className="flex gap-6">
-          <button
-            onClick={() => navigate(`/edit/${post._id}`)} // ✅ Use _id instead of slug
-            className="text-blue-600 hover:underline font-semibold"
-          >
-            ✏️ Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            className="text-red-600 hover:underline font-semibold"
-          >
-            🗑️ Delete
-          </button>
-        </div>
-      )}
+        {isAuthor && (
+          <div className="flex gap-6">
+            <button
+              onClick={() => navigate(`/edit/${post._id}`)}
+              className="text-blue-600 hover:underline font-semibold"
+            >
+              ✏️ Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-red-600 hover:underline font-semibold"
+            >
+              🗑️ Delete
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

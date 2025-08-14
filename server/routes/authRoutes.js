@@ -3,11 +3,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const geoip = require("geoip-lite");
 const User = require("../models/User");
-const Visitor = require("../models/Visitor"); // ✅ import visitor model
+const Visitor = require("../models/Visitor");
 
 const router = express.Router();
 
-// 📌 Helper function to log user activity with user info
 async function logUserActivity(req, path, user = null) {
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   const geo = geoip.lookup(ip) || {};
@@ -19,8 +18,8 @@ async function logUserActivity(req, path, user = null) {
     userAgent: req.headers["user-agent"],
     path: path || "/",
     visitedAt: new Date(),
-    username: user?.username || null, // ✅ add username
-    email: user?.email || null        // ✅ add email
+    username: user?.username || null,
+    email: user?.email || null     
   });
 }
 
@@ -48,7 +47,6 @@ router.post("/register", async (req, res) => {
     });
     const savedUser = await newUser.save();
 
-    // ✅ Log this registration in visitor analytics
     await logUserActivity(req, "/register", savedUser);
 
 
@@ -91,7 +89,6 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // ✅ Log this login in visitor analytics
     await logUserActivity(req, "/login", user);
 
 

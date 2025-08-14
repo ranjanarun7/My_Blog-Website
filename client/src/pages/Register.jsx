@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +25,7 @@ const Register = () => {
 
       navigate("/login");
     } catch (err) {
-      console.error("Registration failed", err);
+      // console.error("Registration failed", err);
       setErrorMsg(
         err.response?.data?.message ||
         err.response?.data?.error ||

@@ -1,4 +1,3 @@
-// routes/admin.js
 const express = require("express");
 const geoip = require("geoip-lite");
 const jwt = require("jsonwebtoken");
@@ -8,9 +7,6 @@ const adminOnly = require("../middleware/adminOnly.js");
 
 const router = express.Router();
 
-/* ---------------------------------
-   📌 Track Visitor (with logged-in user info)
------------------------------------ */
 router.post("/track", async (req, res) => {
   try {
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
@@ -24,8 +20,6 @@ router.post("/track", async (req, res) => {
       try {
         const token = authHeader.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // Now decoded will have username & email
         username = decoded.username;
         email = decoded.email;
       } catch (err) {
@@ -50,10 +44,6 @@ router.post("/track", async (req, res) => {
   }
 });
 
-
-/* ---------------------------------
-   📌 Get Visitor Analytics (Admin only)
------------------------------------ */
 router.get("/analytics", adminOnly, async (req, res) => {
   try {
     const visitors = await Visitor.find()
@@ -67,9 +57,6 @@ router.get("/analytics", adminOnly, async (req, res) => {
   }
 });
 
-/* ---------------------------------
-   📌 Get Registered Users (Admin only)
------------------------------------ */
 router.get("/users", adminOnly, async (req, res) => {
   try {
     const users = await User.find({}, "username email role createdAt")
@@ -83,32 +70,21 @@ router.get("/users", adminOnly, async (req, res) => {
   }
 });
 
-/* ---------------------------------
-   📌 Combined Dashboard Data (Admin only)
------------------------------------ */
-// 📌 Combined Dashboard Data (Admin only)
 router.get("/dashboard", adminOnly, async (req, res) => {
   try {
-    // 🔹 Last 1 month ka date calculate
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
-    // Visitors last 1 month ke
     const visitors = await Visitor.find({ visitedAt: { $gte: oneMonthAgo } })
       .sort({ visitedAt: -1 })
       .limit(100);
-
-    // All registered users (newest first)
     const users = await User.find({}, "username email role createdAt")
       .sort({ createdAt: -1 });
-
-    // Total user count
     const totalUsers = users.length;
 
     res.json({
-      totalUsers,  // ✅ Total count
-      users,       // ✅ Full user list with username & email
-      visitors     // ✅ Last 1 month visitors
+      totalUsers,
+      users,
+      visitors
     });
   } catch (err) {
     console.error("Error fetching dashboard data:", err);

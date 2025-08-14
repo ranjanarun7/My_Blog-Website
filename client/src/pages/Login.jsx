@@ -10,7 +10,6 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  // Optional: Redirect if already logged in
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) navigate("/");

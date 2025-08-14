@@ -18,7 +18,7 @@ async function adminOnly(req, res, next) {
       return res.status(403).json({ message: "Admins only" });
     }
 
-    req.user = user; // ✅ user info available for next middleware/routes
+    req.user = user;
     next();
   });
 }

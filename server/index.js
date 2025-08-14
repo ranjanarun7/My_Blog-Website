@@ -4,8 +4,6 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 const analyticsRoutes = require("./routes/analytics.js");
-
-
 const postRoutes = require("./routes/postRoutes");
 const authRoutes = require("./routes/authRoutes");
 
@@ -15,7 +13,6 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// ✅ Cloudinary config (new)
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
@@ -44,13 +41,9 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
-// ❌ Removed: uploads folder logic
-// ❌ Removed: app.use("/uploads", express.static(...))
-
 // Routes
 app.use("/api", analyticsRoutes);
-app.use("/api/posts", postRoutes); // ✅ Your postRoutes should now handle Cloudinary upload
+app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoutes);
 
 // Connect to MongoDB

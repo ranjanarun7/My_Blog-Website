@@ -1,5 +1,5 @@
 import React from "react";
-import { Mail, Instagram, Twitter, Facebook } from "lucide-react";
+import { Mail, Instagram, Twitter, Facebook} from "lucide-react";
 import { Button } from "../components/Button";
 import { Card, CardContent } from "../components/Card";
 

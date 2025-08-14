@@ -11,12 +11,10 @@ const Sidebar = ({
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const archives = ["2025", "2024", "2023"];
   const languages = ["English", "Hindi"];
-
-  // Debounce search
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(debouncedSearch);
-    }, 500); // 500ms delay
+    }, 500);
     return () => clearTimeout(timeout);
   }, [debouncedSearch]);
 
@@ -37,7 +35,6 @@ const Sidebar = ({
 
   return (
     <div className="p-4 bg-white rounded shadow space-y-6">
-      {/* 🔍 Search */}
       <div>
         <input
           type="text"
@@ -48,7 +45,6 @@ const Sidebar = ({
         />
       </div>
 
-      {/* 🌍 Language Switcher */}
       <div>
         <h3 className="font-semibold mb-2">Language</h3>
         <button
@@ -58,8 +54,6 @@ const Sidebar = ({
           {language}
         </button>
       </div>
-
-      {/* 🗃️ Archives */}
       <div>
         <h3 className="font-semibold mb-2">Archives</h3>
         <ul className="text-sm space-y-1">
@@ -78,8 +72,6 @@ const Sidebar = ({
           ))}
         </ul>
       </div>
-
-      {/* ❌ Reset Filters */}
       <div className="pt-2">
         <button
           onClick={handleResetFilters}

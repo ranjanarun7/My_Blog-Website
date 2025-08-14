@@ -12,7 +12,7 @@ const PostCard = ({ post }) => {
       <img
         src={
           post.image
-            ? post.image // ✅ Use Cloudinary full URL directly
+            ? post.image 
             : "https://placehold.co/600x400?text=No+Image"
         }
         alt={post.title}

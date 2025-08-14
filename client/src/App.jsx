@@ -1,11 +1,9 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useState } from "react";
-import useVisitorTracking from "./hooks/useVisitorTracking"; // ✅ NEW
-
+import useVisitorTracking from "./hooks/useVisitorTracking";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
-
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -50,8 +48,6 @@ function Layout() {
             <Route path="/create" element={<CreatePost />} />
             <Route path="/edit/:id" element={<EditPost />} />
             <Route path="/post/:id" element={<SinglePost />} />
-
-            {/* ✅ New Admin Route */}
             <Route path="/admin" element={<AdminAnalytics />} />
           </Routes>
         </div>
@@ -80,6 +76,6 @@ function Layout() {
 }
 
 export default function App() {
-  useVisitorTracking(); // ✅ tracking trigger yahan
+  useVisitorTracking();
   return <Layout />;
 }

@@ -28,7 +28,6 @@ export default function Navbar({ toggleSidebar }) {
   return (
     <nav className="bg-black text-white p-4 relative z-50">
       <div className="flex justify-between items-center">
-        {/* Left: Logo & Sidebar toggle */}
         <div className="flex items-center gap-4">
           <button
             onClick={toggleSidebar}
@@ -45,7 +44,6 @@ export default function Navbar({ toggleSidebar }) {
           </Link>
         </div>
 
-        {/* Center: Desktop Nav Links */}
         <div className="hidden md:flex space-x-6 font-bold">
           <Link
             to="/"
@@ -73,7 +71,6 @@ export default function Navbar({ toggleSidebar }) {
           </Link>
         </div>
 
-        {/* Right: User Icon */}
         <div className="relative z-50" ref={dropdownRef}>
           <div
             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -82,10 +79,9 @@ export default function Navbar({ toggleSidebar }) {
             <FaUserCircle size={28} />
           </div>
 
-          {/* Dropdown Menu */}
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white text-black shadow-lg rounded-md py-2 z-50">
-              {/* Mobile nav links only visible on mobile */}
+
               <div className="block md:hidden">
                 <Link
                   to="/"
@@ -122,8 +118,6 @@ export default function Navbar({ toggleSidebar }) {
                   <div className="px-4 py-2 text-sm text-gray-800 border-b">
                     Hello, {user.username}
                   </div>
-
-                  {/* ✅ Show Admin Dashboard only if user is admin */}
                   {user.role === "admin" && (
                     <Link
                       to="/admin"

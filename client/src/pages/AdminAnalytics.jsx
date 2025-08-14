@@ -56,7 +56,6 @@ export default function AdminAnalytics() {
 
         {!error && (
           <>
-            {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               <div className="bg-blue-100 p-4 rounded-lg text-center">
                 <h2 className="text-lg font-semibold text-gray-700 cursor-pointer" onClick={() => setShowUsers(!showUsers)}>
@@ -74,7 +73,6 @@ export default function AdminAnalytics() {
               </div>
             </div>
 
-            {/* Users Table Toggle */}
             {showUsers && (
               <>
                 <h2 className="text-xl font-bold mb-3">All Registered Users</h2>
@@ -111,7 +109,6 @@ export default function AdminAnalytics() {
               </>
             )}
 
-            {/* Visitors Table */}
             <h2 className="text-xl font-bold mb-3">Recent Visitors (Last 1 Month)</h2>
             <div className="overflow-x-auto">
               <table className="w-full border border-gray-200 rounded-lg overflow-hidden">

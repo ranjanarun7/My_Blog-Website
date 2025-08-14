@@ -11,7 +11,7 @@ const CreatePost = () => {
     content: "",
     category: "",
     language: "",
-    status: "draft", // default
+    status: "draft",
   });
 
   const [image, setImage] = useState(null);
@@ -47,7 +47,7 @@ const CreatePost = () => {
     });
 
     if (image) {
-      payload.append("image", image); // ✅ Cloudinary-compatible field name
+      payload.append("image", image);
     }
 
     try {
@@ -83,7 +83,6 @@ const CreatePost = () => {
           required
         />
 
-        {/* ✅ TinyMCE Editor */}
         <Editor
           apiKey="hzqxq6992erm01lm4aro2lyvomqr1wdey40hjhek6ybujf40"
           value={formData.content}

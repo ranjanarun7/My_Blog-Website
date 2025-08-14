@@ -7,8 +7,8 @@ const EditPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState("active");
-  const [image, setImage] = useState(null); // new image to upload
-  const [existingImage, setExistingImage] = useState(""); // for preview
+  const [image, setImage] = useState(null);
+  const [existingImage, setExistingImage] = useState("");
   const [preview, setPreview] = useState(null);
 
   const { id } = useParams();
@@ -44,7 +44,7 @@ const EditPost = () => {
     formData.append("title", title);
     formData.append("content", content);
     formData.append("status", status);
-    if (image) formData.append("image", image); // Cloudinary-compatible
+    if (image) formData.append("image", image);
 
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}/api/posts/${id}`, formData, {

@@ -51,17 +51,14 @@ const Home = ({ search = "", archiveYear = "", language = "" }) => {
     <div className="w-full px-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Latest Posts</h2>
 
-      {/* 🔄 Loading State */}
       {loading && (
         <div className="flex justify-center items-center h-40">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
-      {/* ❌ Error Message */}
       {error && <p className="text-red-600 text-center">{error}</p>}
 
-      {/* ✅ Posts Grid */}
       {!loading && !error && (
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPosts.length > 0 ? (
